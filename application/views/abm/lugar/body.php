@@ -1,45 +1,22 @@
 <form>
-  <div class="form-row ml-5 mr-5" style="justify-content: center;">
-    <div class="form-group col-md-4">
-      <label for="montoIngresar">Desde </label>
-      <input type="text" id="from" name="from">
+    <!-- Botón para agregar nuevo lugar y guardar ingreso -->
+    <div style="position: relative; width: 100%; bottom: 1px;">
+        
+        <div class="float-right mr-5 mb-5 mt-5">
+            <button style="position: relative;" type="button" id="altaLugar" class="btn btn-outline-success" >Alta Lugar</button>
+        </div>
     </div>
-    <div class="form-group col-md-3">
-      <label for="concepto">Hasta</label>
-      <input type="text" id="to" name="to">
-    </div>
-    <div class="form-group col-md-3" style="display: flex;align-items: center;justify-content: center;">
-      <button type="button" class="btn btn-outline-success" id="btnBuscar" disabled>Buscar</button>
-    </div>
-
-    <div class="form-group col-md-12 col-xl-6">
-      <div class="row   row-cols-md-12" >
-      <label  class="mr-2"> Filtrar por Categoria:   </label>
-       <select class="form-control text-uppercase press cmbcategoria" name="categoria[]" multiple="multiple" id="cmbcategoria"></select>
-      </div>
-      
-
-    </div>
-
-<div class="form-group col-md-12 col-xl-6">
-<div class="row   row-cols-md-12 row-cols-xl-12">
-      <label style="margin-right: 5%;"> Filtrar por Lugar:  </label>
-             <select class="form-control text-uppercase press cmblugar" name="lugar[]" multiple="multiple" id="cmblugar"></select>
-      </div>
-      </div>
-  </div>
   <div class="container-fluid">
-    <div class="mb-3">
-  <input type="text" id="buscador" class="form-control" placeholder="Buscar por Concepto o Monto">
-</div>
+    
   <table class="table  table-bordered">
-    <thead class="text-center bg-warning text-white">
+    <thead class="text-center bg-info text-white">
       <tr>
 
-        <th data-name="fecha" scope="col">Fecha</th>
-        <th data-name="lugar" scope="col">Lugar/Categoria</th>
-        <th data-name="concepto" scope="col">Concepto</th>
-        <th data-name="monto" scope="col">Monto</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Activo</th>
+        <th scope="col">Tipo de Moneda</th>
+        <th scope="col">Imagen</th>
+        <th scope="col">Acciones</th>
       </tr>
     </thead>
     <tbody class="text-dark">
@@ -47,3 +24,6 @@
   </table>
   </div>
 </form>
+<!-- Modal --> 
+<div class="modal" id="modal" data-backdrop="static" data-keyboard="false" tabindex="-1"  aria-hidden="true">
+</div>

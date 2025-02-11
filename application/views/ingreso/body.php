@@ -30,17 +30,7 @@
     </div>
 
     <br>
-    <!-- Botón para agregar nuevo lugar y guardar ingreso -->
-    <div style="position: relative; width: 100%; bottom: 1px;">
-        <p class="lead" style="position:relative; left: 8%; top: 45px;">
-            <span id="altaLugar" role="button" class="badge rounded-pill color-success bg-danger text-light">
-                Nuevo Lugar
-            </span>
-        </p>
-        <div class="float-right mr-5">
-            <button style="position: relative;" type="button" class="btn btn-outline-success" id="btnGuardarIngreso">Guardar Ingreso</button>
-        </div>
-    </div>
+  
 </form>
 
 <!-- Modal -->

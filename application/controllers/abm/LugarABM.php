@@ -1,18 +1,20 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+/**
+ * @property LugarModel $l
+ */
 class LugarABM extends CI_Controller {
        public function __construct(){
         parent::__construct();
               $this->load->model('LugarModel','l',true);
-              $this->load->model('MovimientoModel','m',true);
-              $this->load->model('EgresoModel','e',true);
+         
         }
         
   public function index()
   {
-    $datos['Lugares']     = $this->l->darLugar();
+   
     $datos_page['titulo'] = 'ABM de Lugar';
-    $datos_page['page']   = $this->load->view('abm/lugar/body',$datos, true);
+    $datos_page['page']   = $this->load->view('abm/lugar/body','', true);
     $this->load->view('menu/header');
     $this->load->view('abm/lugar/header');
     $this->load->view('menu/body',$datos_page, false);
@@ -20,155 +22,228 @@ class LugarABM extends CI_Controller {
     $this->load->view('abm/lugar/footer');
   }
 
-  public function darMovimientos(){
-    $desde = $_POST['desde'];
-    $hasta = $_POST['hasta'];
-    $categoria = $_POST['categoria'];
-    $lugar = !isset($_POST['lugar']) ? '0' : $_POST['lugar'];
-    $orderBy = !isset($_POST['orderBy']) ? 'me.fecha_movimiento DESC ' : $_POST['orderBy'];
-
-    $movimientos = $this->m->darHistorial($desde,$hasta,$categoria,$lugar,$orderBy);
-
-    if ($movimientos){
-    
-    $arrayFechas=[];       
-    foreach ($movimientos as $key => $value){
-          array_push($arrayFechas, $value->fecha);
-       }
-    $fechaMinima = min($arrayFechas);
-    $fechaMaxima = max($arrayFechas);
-
-    $movimientosDetalle = $this->m->darMovimientosDetalle($fechaMinima,$fechaMaxima);
-    $renglon=''; 
+  public function darLugares(){
+    $lugares = $this->l->darLugarTodos();
     $html='';
-    $suma = 0;
-    $sumadetalle = 0;
-    foreach ($movimientos as $key => $value){
-      //acomodo la fecha 
-      $f = explode("-",$value->fecha);
-      $fecha = $f[2]."-".$f[1]."-".$f[0];
-      $key++;
-      $html.='<tr class="text-light bg-dark">
-              <td class="custom-td-height">'.$fecha.'</td>
-              <td class="custom-td-height">'.$value->lugar.'</td>
-              <td class="custom-td-height">'.$value->concepto_general.'</td>';
-      $detalle='';
-      $ultimoRenglon='';
-      foreach ($movimientosDetalle as $keyDet => $valueDet){
-
-      if ($categoria=='0'){
-        if ($value->id_movimiento_enc == $valueDet->movimiento){ 
-          $sumadetalle = (floatval($value->monto)) + ($suma);
-          $ultimoRenglon='<td class="custom-td-height">'.$value->monto.' <i class="fas fa-angle-double-down mostrarmas" style="cursor: pointer;" data-id='.$value->id_movimiento_enc.'></i><i class="fas fa-angle-double-up mostrarmas up_'.$value->id_movimiento_enc.'" style="cursor: pointer;display:none" "></i></td>';
-          $detalle.='
-                    <tr class="mitdoculto_'.$value->id_movimiento_enc.' text-dark" style="display: none;">
-                      <td class="custom-td-height"></td>
-                      <td class="custom-td-height">'.$valueDet->categoria.'</td>
-                      <td class="custom-td-height">'.$valueDet->concepto.'</td>
-                      <td class="custom-td-height">'.$valueDet->monto.'</td>
-                    </tr>';
-        }
-      }else{
-        
-        if ($value->id_movimiento_enc == $valueDet->movimiento){ 
-          $sumadetalle = (floatval($value->monto)) + ($suma);
-          $ultimoRenglon='<td class="custom-td-height">'.$value->monto.' <i class="fas fa-angle-double-down mostrarmas" style="cursor: pointer;" data-id='.$value->id_movimiento_enc.'></i><i class="fas fa-angle-double-up mostrarmas up_'.$value->id_movimiento_enc.'" style="cursor: pointer;display:none" "></i></td>';
-          
-            // Convertir el string de categorías permitidas a un array
-            $categorias_permitidas = explode(',', $categoria);
-
-            // Eliminar los espacios en blanco de cada elemento del array
-            $categorias_permitidas = array_map('trim', $categorias_permitidas);
-
-            // Comprobar si el valor está dentro del array de categorías permitidas
-            if (in_array($valueDet->id_categoria, $categorias_permitidas)) {
+    if ($lugares){
+        foreach ($lugares as $lug) {
+          $moneda = ($lug->tipoMoneda == 1) ? '$' : '$$';
+          if ($lug->activo == 1){
+            $activo='SI';
+            $imgActivo='<i class="fas fa-trash-alt text-danger eliminar" style="cursor: pointer;" data-id="'.$lug->id_lugar.'"></i>';
             
-          $detalle.='
-                    <tr class="mitdoculto_'.$value->id_movimiento_enc.' text-dark" style="display: none;">
-                      <td class="custom-td-height"></td>
-                      <td class="custom-td-height">'.$valueDet->categoria.'</td>
-                      <td class="custom-td-height">'.$valueDet->concepto.'</td>
-                      <td class="custom-td-height">'.$valueDet->monto.'</td>
-                    </tr>';
+          }else{
+            $activo='NO';
+            $imgActivo='<i class="fas fa-check text-success activar" style="cursor: pointer;" data-id="'.$lug->id_lugar.'" data-toggle="tooltip" title="Renovar Limite"></i>';
+
           }
-        }
-      }
-
-      }
-
-
-      if (empty($detalle))
-      {  
-         $suma = (floatval($value->monto)) + ($suma);
-         $ultimoRenglon='<td>'.$value->monto.'</td>';
-      }
-      else{$suma= $sumadetalle; $ultimoRenglon.=$detalle;}
-        $html.= $ultimoRenglon;
-    }       
-
-    if($suma < 0) $suma = $suma *-1;
-    $sumaFormateada = number_format($suma, 2);
-  
-     if ($categoria!=='0') {
-      $html.='<tr><th colspan=3 style="text-align:center">TOTAL:</th><td>$ '.$sumaFormateada.'</td>';
-     }
-
-    echo $html;
-  }
-  else{
-    echo "Sin Registros";
-  }
-  
-  }
-  public function darMovimientosFiltro(){
-  
-     $categoria = $_POST['categoria'];
-
-      $lugar = !isset($_POST['lugar'])? '0' : $_POST['lugar'];
-     
-     if ($lugar==0){
-      $movimientos = $this->m->darMovimientosCategoria($categoria);
-       
-     }else{
-          $lugarString= implode ( ',' , $lugar );
-          $movimientos = $this->m->darMovimientosCategoriaLugar($categoria,$lugarString);
-     }
-      $renglon=''; 
-      $html='';
-      foreach ($movimientos as $key => $value){
-        $f = explode("-",$value->fecha);
-        $fecha = $f[2]."-".$f[1]."-".$f[0];
-        $key++;
-        $html.='<tr>
-              <th scope="row">'.$key.'</th>
-              <td>'.$fecha.'</td>
-              <td>'.$value->lugar.'</td>
-              <td>'.$value->concepto.'</td>';
-      //$detalle='';
-        $ultimoRenglon='';
-        if (empty($detalle)){$ultimoRenglon='<td>'.$value->monto.'</td>';}else{$ultimoRenglon.=$detalle;}
-        $html.= $ultimoRenglon;
-      }       
-  echo $html;
-  }
-   public function darCategoriasJS(){
-      $res = $this->e->darCategoria();
-      $html='<option value="0">MOSTRAR TODAS</option>';
-      foreach ($res as $key => $value) {
-       // if (($value->id_categoria !=='1') && ($value->id_categoria !=='2')){
-          $html.='<option value="'.$value->id_categoria.'">'.$value->nombre.'</option>';
-        //}
-      }
-        echo json_encode($html);
-    }  
-    public function darLugarJS(){
-      $res = $this->e->darLugares();
-      $html='<option value="0">MOSTRAR TODAS</option>';
-      foreach ($res as $key => $value) {
-          $html.='<option value="'.$value->id_lugar.'">'.$value->nombre.'</option>';
+          $imgUrl = base_url(htmlspecialchars($lug->img, ENT_QUOTES, "UTF-8"));
         
-      }
-        echo json_encode($html);
+          $html .= '<tr class="text-light bg-dark " data-id="'.$lug->id_lugar.'" data-tipo="encabezado">
+                <td data-columna="nomrbe">'.$lug->nombre.'</td>
+                <td data-columna="activo">'.$activo.'</td>
+                <td data-columna="moneda">'.$moneda.'</td>
+                <td data-columna="imagen"><img src="'.$imgUrl.'" class="card-img-top" alt="'.htmlspecialchars($lug->nombre, ENT_QUOTES, "UTF-8").'" style="width: 25%; height: auto; object-fit: cover;"></td>
+                ';
+            $html .= '<td class="text-center">';
+                $html .= $imgActivo;
+            $html .= '</td></tr>';
+        }
+        echo $html;
+    } else {
+        echo "<tr><td colspan='5' class='text-center'>Sin Registros</td></tr>";
     }
-  function your_money_format($value) {  return '$' . number_format( $value,$decimals = 2,$dec_point = ",",$thousands_sep = "."); }  
+  }
+
+  public function eliminarLugar() {
+
+    $id    = $_POST['id'];
+    $value = ['activo' => 0];
+    $where = ['id_lugar' => $id]; 
+    $res   = $this->l->actualizar('lugar',$value,$where);
+    echo json_encode($res);
+}  
+
+  public function activarLugar() {
+
+    $id    = $_POST['id'];
+    $value = ['activo' => 1];
+    $where = ['id_lugar' => $id]; 
+    $res   = $this->l->actualizar('lugar',$value,$where);
+    echo json_encode($res);
+}  
+
+  public function validarLugar() {
+
+    $id    = $_POST['id'];
+    $res   = $this->l->darMontoLugarTodos($id);
+    echo json_encode($res);
+}
+
+public function guardarLugarNuevo()
+{
+    $nombreLugar = $_POST['nombre'];
+    $tipoMoneda = $_POST['tipoMoneda'];
+
+    // Verificar si se subió una imagen
+    if (isset($_FILES["image"]) && $_FILES["image"]["error"] === UPLOAD_ERR_OK) {
+        $imageTmp = $_FILES["image"]["tmp_name"];
+        $imageName = $_FILES["image"]["name"];
+
+        // Obtener la extensión del archivo
+        $ext = pathinfo($imageName, PATHINFO_EXTENSION);
+        $ext = strtolower($ext); // Asegurar que la extensión esté en minúsculas
+
+        // Validar que el archivo sea una imagen
+        $validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        if (!in_array($ext, $validExtensions)) {
+            echo "Error: Formato de imagen no permitido.";
+            return;
+        }
+
+        // Generar un nombre único para la imagen y su thumbnail
+        $thumbFileName = "$nombreLugar".".".$ext;
+
+        // Rutas de destino
+        $thumbPath = "assets/img/lugares/" . $thumbFileName;
+
+        // Mover el archivo a la carpeta de destino
+        if (move_uploaded_file($imageTmp, $thumbPath)) {
+            // Corregir la orientación de la imagen (si es necesario)
+            $this->corregirRotacion($thumbPath);
+
+            // Crear thumbnail
+            $this->crearThumbnail($thumbPath, $thumbPath, 200, 200);
+
+            // Guardar la ruta del thumbnail en la BD
+            $campo['nombre'] = $nombreLugar;
+            $campo['img'] = $thumbPath; // Guardamos la ruta del thumbnail
+            $campo['activo'] = 1;
+            $campo['tipoMoneda'] = $tipoMoneda;
+
+            $table = 'lugar';
+            $guardar_lugar = $this->l->insertarDatosTabla($campo, $table);
+
+            if ($guardar_lugar) {
+                echo $thumbPath;
+            } else {
+                echo "Error al guardar en la base de datos.";
+            }
+        } else {
+            echo "Error al subir la imagen.";
+        }
+    } else {
+        echo "No se ha subido ninguna imagen válida.";
+    }
+}
+  public function cargarImagenLugarNuevo()
+  {
+    if (($_FILES["image"]["type"] == "image/pjpeg")|| ($_FILES["image"]["type"] == "image/jpeg")|| ($_FILES["image"]["type"] == "image/png")|| ($_FILES["image"]["type"] == "image/gif")) 
+    {
+      
+      $check = getimagesize($_FILES["image"]["tmp_name"]);
+        //print_r($_FILES);
+        if($check !== false){
+            $image = $_FILES["image"]["tmp_name"];
+        // Extensión de la imagen
+          $type = pathinfo($image, PATHINFO_EXTENSION);
+        // Cargando la imagen
+          $data = file_get_contents($image);
+
+        // Decodificando la imagen en base64
+          $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        // Mostrando la imagen
+        echo $base64;
+      
+      }else{ echo 0;}
+
+      
+    } else { echo 0;}
+  }
+
+
+    /**
+     * Función para crear un thumbnail manteniendo la relación de aspecto.
+     */
+    private function crearThumbnail($sourcePath, $destPath, $thumbWidth, $thumbHeight)
+    {
+        list($width, $height, $type) = getimagesize($sourcePath);
+
+        // Crear una nueva imagen en blanco con las dimensiones del thumbnail
+        $thumbnail = imagecreatetruecolor($thumbWidth, $thumbHeight);
+
+        // Dependiendo del tipo de imagen, crear la imagen desde el archivo original
+        switch ($type) {
+            case IMAGETYPE_JPEG:
+                $sourceImage = imagecreatefromjpeg($sourcePath);
+                break;
+            case IMAGETYPE_PNG:
+                $sourceImage = imagecreatefrompng($sourcePath);
+                imagealphablending($thumbnail, false);
+                imagesavealpha($thumbnail, true);
+                break;
+            case IMAGETYPE_GIF:
+                $sourceImage = imagecreatefromgif($sourcePath);
+                break;
+            case IMAGETYPE_WEBP:
+                $sourceImage = imagecreatefromwebp($sourcePath);
+                break;
+            default:
+                return false;
+        }
+
+        // Redimensionar la imagen manteniendo la relación de aspecto
+        imagecopyresampled($thumbnail, $sourceImage, 0, 0, 0, 0, $thumbWidth, $thumbHeight, $width, $height);
+
+        // Guardar el thumbnail
+        switch ($type) {
+            case IMAGETYPE_JPEG:
+                imagejpeg($thumbnail, $destPath, 90);
+                break;
+            case IMAGETYPE_PNG:
+                imagepng($thumbnail, $destPath, 9);
+                break;
+            case IMAGETYPE_GIF:
+                imagegif($thumbnail, $destPath);
+                break;
+            case IMAGETYPE_WEBP:
+                imagewebp($thumbnail, $destPath, 90);
+                break;
+        }
+
+        // Liberar memoria
+        imagedestroy($thumbnail);
+        imagedestroy($sourceImage);
+
+        return true;
+    }
+
+    /**
+     * Función para corregir la rotación de la imagen si tiene metadatos EXIF.
+     */
+    private function corregirRotacion($imagePath)
+    {
+        // Solo procesar si es una imagen JPG/JPEG (EXIF solo afecta a este formato)
+        if (exif_imagetype($imagePath) === IMAGETYPE_JPEG) {
+            $exif = exif_read_data($imagePath);
+
+            if (!empty($exif['Orientation'])) {
+                $image = imagecreatefromjpeg($imagePath);
+                switch ($exif['Orientation']) {
+                    case 3:
+                        $image = imagerotate($image, 180, 0);
+                        break;
+                    case 6:
+                        $image = imagerotate($image, -90, 0);
+                        break;
+                    case 8:
+                        $image = imagerotate($image, 90, 0);
+                        break;
+                }
+                imagejpeg($image, $imagePath, 90);
+                imagedestroy($image);
+            }
+        }
+    }
+
 }

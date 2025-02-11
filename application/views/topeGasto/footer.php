@@ -282,7 +282,7 @@ $(document).on("change","#from,#to ",function(){
     var desde = $("#from").val();
         hasta =$("#to").val();
         datos = {desde:desde,hasta:hasta}
-        url   = '<?php echo(base_url());?>TopeGasto/verificarCatLim';
+        url   = '<?php echo(base_url());?>TopeGasto/darCategoriasJS';
           $.post(url,datos).done(function(resp){
       var res= JSON.parse(resp); 
         $('#cmbcategoria').html(res);

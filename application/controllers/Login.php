@@ -37,13 +37,14 @@ class Login extends CI_Controller {
 
             // Convertir monto a pesos
             $montoPesos = $montoOriginal * $cotizacion;
-            $datos['montoLugares'][$key]->valorPesos = number_format($montoPesos, 0, ",", ".");
+            $datos['montoLugares'][$key]->valorPesos = number_format($montoPesos, 0,",",".");
             $value->monto = $montoPesos;
         }
 
-        $total += $value->monto;
-        $value->monto = $this->your_money_format($value->monto);
-        $value->montoFloat = $value->monto;
+        $valor = $value->monto;
+				$total+= $valor;
+				$value->monto =        $this->your_money_format($valor);
+				$value->montoFloat  =  $valor;
     }
 
     // Formatear total

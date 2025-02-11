@@ -88,36 +88,4 @@ class TopeGasto extends CI_Controller {
 				if ($guardar_limite_gasto!==1){$control=0;}
 				echo json_encode($control);		
     }
-  public function verificarCatLim(){
-    	//SELECT * FROM limite_gasto WHERE desde <= '2022-03-1' AND hasta >= '2022-03-1' AND categoria LIKE '%3%' AND lugar LIKE'%2%'
-
-	    $desdeSF      = $_POST['desde'];
-	    $hastaSF      = $_POST['hasta'];
-	    $control=1;
-    
-					//acomodo la fecha desde
-					$d = explode("/",$desdeSF);
-   			  $desde = $d[2]."-".$d[1]."-".$d[0];
-					
-					//acomodo la fecha hasta
-					$h = explode("/",$hastaSF);
-   			  $hasta = $h[2]."-".$h[1]."-".$h[0];
-   		
-          $verificar_categoria_gasto = $this->t->consultarLimiteCategoria();
-        		$categorias='';
-        			foreach ($verificar_categoria_gasto as $value) {
-        					$categorias.= $value->categoria.',';  
-        			}
-  									$categorias = substr($categorias, 0, -1); 
-        						$arrayCategorias = explode(',', $categorias);
-							 	    $categorias = $this->t->darCategoriaRestringidas($arrayCategorias);
-								      $html='<option></option>';
-   										foreach ($categorias as $key => $value){
-												   	
-								  		    		$html.='<option value="'.$value->id_categoria.'">'.$value->nombre.'</option>';
-								      }
-				echo json_encode($html);
-    }
-
-
    }

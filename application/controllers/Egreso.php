@@ -205,7 +205,7 @@ if ($limiteCategoria==1) {
         $data['nombre'] = $_POST['categoria'];
         $data['activa'] = 1;
         $table = 'categoria';
-        $guardar_actividad = $this->e->insertarDatosTabla($data,$table);
+        $guardar_actividad = $this->e->insertarDatosTablaEgreso($data,$table);
         echo $guardar_actividad;
     }
 

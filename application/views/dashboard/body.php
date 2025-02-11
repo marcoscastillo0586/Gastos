@@ -40,7 +40,7 @@
 										<label data-toggle="tooltip" title="<div class='custom-tooltip'>Valor en pesos:<br><span class='text-info font-weight-bold'>$<?= htmlspecialchars($value->valorPesos, ENT_QUOTES, 'UTF-8'); ?></span></div>">
 											<?php
 											$montoDolar = empty($value->montoDolar) ? 0 : $value->montoDolar;
-											echo "$$ " . htmlspecialchars($montoDolar, ENT_QUOTES, 'UTF-8');
+											echo ("$$ " . $montoDolar);
 											?>
 										</label>
 									</div>
@@ -48,7 +48,7 @@
 										<div class="text-gray-900 text-center" style="font-size: 96%;">
 											<?php
 											$monto = empty($value->monto) ? 0 : $value->monto;
-											echo "$ " . htmlspecialchars($monto, ENT_QUOTES, 'UTF-8');
+											echo ("$ ".$monto);
 											?>
 										</div>
 									<?php } ?>
@@ -62,7 +62,7 @@
 
 		   
 			<span id="totalGeneral">
-					 <p>TOTAL: <strong> <?php print_r($sumaTotal); ?></strong> </p>
+					 <p>TOTAL: <strong> $ <?php print_r($sumaTotal); ?></strong> </p>
 					 <!--Ahorro sale de la diferencia de los ingresos en la casa y banco y limites de gastos -->
 					</span>
 			 

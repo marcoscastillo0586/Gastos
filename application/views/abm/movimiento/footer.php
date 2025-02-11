@@ -1,11 +1,7 @@
- 
 <link rel="stylesheet" href="<?=base_url()?>/assets/vendor/jquery-ui/jquery-ui.css">
     <!-- SELECT 2-->
 <script src="<?=base_url()?>assets/vendor/select2/dist/js/select2.js" ></script>
 <script src="<?=base_url()?>/assets/vendor/jquery-ui/jquery-ui.js"></script>
-<!--LOS DATOS ESTAN VERIFICADOS PARA CONCEPTO_GENERAL Y ESTOY EN LA PARRTE DE ARMAR LAQUIERY DEDE EL CONTROLADOR TENGO EL IF PARA DIFERENCIAR ENTRE LA 
-TTABLA MOVIMIENO_ENC Y DET Y DE AHI LO REDIRIJO AL MODAL CQUE CORREPOSNDA.FALTA VER EL TEMA D LA EDICION DE LAS COLUMNAS YA SE MODIFCO EL FUCNION PAR AQUE TAMBINE PERMIOTA MODIFICAR EL ENCABEZADO PERO
-TENGO QEU SEGUIR VIENDO EL CONTROLADOR-->
 <script>
      function darMovimientos() {
         let url = '<?= base_url(); ?>abm/MovimientoABM/darMovimientos';
