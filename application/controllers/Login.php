@@ -1,6 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+/**
+ * @property LugarModel $l
+ * @property TopeGastoModel $t
+ * @property CategoriaModel $c
+ */
 class Login extends CI_Controller {
     public function __construct(){
     parent::__construct();

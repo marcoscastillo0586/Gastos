@@ -1,6 +1,10 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+/**
+ * @property MovimientoModel $m
+ * @property EgresoModel $e
+ * @property TopeGastoModel $t
+ */
 class Egreso extends CI_Controller {
 		   public function __construct(){
         parent::__construct(); 
@@ -62,7 +66,7 @@ class Egreso extends CI_Controller {
    		$campo['nombre'] = $nombreLugar;
   		$campo['img'] = $base64;
         $table = 'lugar';
-        $guardar_lugar = $this->e->insertarDatosTabla($campo,$table);
+        $guardar_lugar = $this->e->insertarDatosTablaEgreso($campo,$table);
  		if ($guardar_lugar) {
 			echo $base64;
 		}else{ echo 0;}
@@ -192,7 +196,7 @@ if ($limiteCategoria==1) {
       $mov_det['monto'] = $value['monto']*-1;
       $mov_det['id_lugar'] = $lugar;
       $mov_det['id_categoria'] = $value['categoria'];
-      $insertar_mov_det = $this->e->insertarDatosTabla($mov_det,$table);
+      $insertar_mov_det = $this->e->insertarDatosTablaEgreso($mov_det,$table);
 			
 			if ($insertar_mov_det==0){$control=0;}
 		}

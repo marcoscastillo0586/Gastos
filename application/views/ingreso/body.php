@@ -19,11 +19,13 @@
             <small id="montoHelp" class="form-text text-muted">Ejemplo: 100.50</small>
         </div>
     </div>
-
+    <div class="float-right mr-5">
+            <button style="position: relative;" type="button" class="btn btn-outline-success" id="btnGuardarIngreso">Guardar Ingreso</button>
+        </div>
     <br>
     <h5>Lugar de ingreso</h5>
     <br>
-    
+
     <!-- Lugares de ingreso -->
     <div class="row row-cols-xl-6 row-cols-md-6 divLugares">
         <?php echo($lugares) ?>

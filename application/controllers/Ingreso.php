@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+/**
+ * @property IngresoModel $i
+ */
 class Ingreso extends CI_Controller {
 		   public function __construct(){
         parent::__construct();
@@ -26,16 +28,26 @@ class Ingreso extends CI_Controller {
 
         foreach ($res as $key => $value) {
         $imgUrl = base_url(htmlspecialchars($value->img, ENT_QUOTES, "UTF-8"));
-
+       
         $html .= '
-        <div class="col">
-            <div class="card imgCard" style="width: 100%; height: auto;" data-imgLugar="'.htmlspecialchars($value->id_lugar, ENT_QUOTES, "UTF-8").'" data-nombreLugar="'.htmlspecialchars($value->nombre, ENT_QUOTES, "UTF-8").'">
-                <img src="'.$imgUrl.'" class="card-img-top" alt="'.htmlspecialchars($value->nombre, ENT_QUOTES, "UTF-8").'" style="width: 100%; height: auto; object-fit: cover;">
-                <div class="card-body text-center"> 
-                    <h6 class="card-title text-uppercase">'.htmlspecialchars($value->nombre, ENT_QUOTES, "UTF-8").'</h6>
+        <div class="col-md-2 col-sm-4 col-6 d-flex justify-content-center mb-1">
+            <div class="card imgCard shadow-sm" style="width: 6.5rem; border-radius: 6px;" 
+                 data-imgLugar="'.htmlspecialchars($value->id_lugar, ENT_QUOTES, "UTF-8").'" 
+                 data-nombreLugar="'.htmlspecialchars($value->nombre, ENT_QUOTES, "UTF-8").'">
+    
+                <img src="' . base_url(htmlspecialchars($value->img, ENT_QUOTES, 'UTF-8')) . '" 
+                    class="card-img-top" 
+                    alt="' . htmlspecialchars($value->nombre, ENT_QUOTES, 'UTF-8') . '" 
+                    style="width: 100%; height: 80px; object-fit: cover; border-top-left-radius: 6px; border-top-right-radius: 6px;">
+                
+                <div class="card-body text-center p-1"> 
+                    <h6 class="card-title text-uppercase font-weight-bold" style="font-size: 0.65rem; margin-bottom: 0;">
+                        ' . htmlspecialchars($value->nombre, ENT_QUOTES, 'UTF-8') . '
+                    </h6>
                 </div>
             </div>
         </div>';
+    
         }
 
      return $html;

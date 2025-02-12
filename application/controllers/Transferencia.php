@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+/**
+ * @property MovimientoModel $m
+ * @property TransferenciaModel $t
+ */
 class Transferencia extends CI_Controller {
 	public function __construct(){
   	parent::__construct();
