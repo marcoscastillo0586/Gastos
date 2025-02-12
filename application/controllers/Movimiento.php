@@ -60,24 +60,26 @@ class Movimiento extends CI_Controller {
       $detalle='';
       $ultimoRenglon='';
       foreach ($movimientosDetalle as $keyDet => $valueDet){
-
+      
       if ($categoria=='0'){
         if ($value->id_movimiento_enc == $valueDet->movimiento){ 
           $sumadetalle = (floatval($value->monto)) + ($suma);
-          $ultimoRenglon='<td class="custom-td-height">'.$value->monto.' <i class="fas fa-angle-double-down mostrarmas" style="cursor: pointer;" data-id='.$value->id_movimiento_enc.'></i><i class="fas fa-angle-double-up mostrarmas up_'.$value->id_movimiento_enc.'" style="cursor: pointer;display:none" "></i></td>';
+
+          
+          $ultimoRenglon='<td class="custom-td-height">'.$this->your_money_format($value->monto).' <i class="fas fa-angle-double-down mostrarmas" style="cursor: pointer;" data-id='.$value->id_movimiento_enc.'></i><i class="fas fa-angle-double-up mostrarmas up_'.$value->id_movimiento_enc.'" style="cursor: pointer;display:none" "></i></td>';
           $detalle.='
                     <tr class="mitdoculto_'.$value->id_movimiento_enc.' text-dark" style="display: none;">
                     	<td class="custom-td-height"></td>
                     	<td class="custom-td-height">'.$valueDet->categoria.'</td>
                     	<td class="custom-td-height">'.$valueDet->concepto.'</td>
-                    	<td class="custom-td-height">'.$valueDet->monto.'</td>
+                    	<td class="custom-td-height">'.$this->your_money_format($valueDet->monto).'</td>
                     </tr>';
         }
       }else{
         
         if ($value->id_movimiento_enc == $valueDet->movimiento){ 
           $sumadetalle = (floatval($value->monto)) + ($suma);
-          $ultimoRenglon='<td class="custom-td-height">'.$value->monto.' <i class="fas fa-angle-double-down mostrarmas" style="cursor: pointer;" data-id='.$value->id_movimiento_enc.'></i><i class="fas fa-angle-double-up mostrarmas up_'.$value->id_movimiento_enc.'" style="cursor: pointer;display:none" "></i></td>';
+          $ultimoRenglon='<td class="custom-td-height">'.$this->your_money_format($value->monto).' <i class="fas fa-angle-double-down mostrarmas" style="cursor: pointer;" data-id='.$value->id_movimiento_enc.'></i><i class="fas fa-angle-double-up mostrarmas up_'.$value->id_movimiento_enc.'" style="cursor: pointer;display:none" "></i></td>';
           
             // Convertir el string de categorías permitidas a un array
             $categorias_permitidas = explode(',', $categoria);
@@ -93,7 +95,7 @@ class Movimiento extends CI_Controller {
                       <td class="custom-td-height"></td>
                       <td class="custom-td-height">'.$valueDet->categoria.'</td>
                       <td class="custom-td-height">'.$valueDet->concepto.'</td>
-                      <td class="custom-td-height">'.$valueDet->monto.'</td>
+                      <td class="custom-td-height">'.$this->your_money_format($valueDet->monto).'</td>
                     </tr>';
           }
         }
@@ -105,17 +107,17 @@ class Movimiento extends CI_Controller {
       if (empty($detalle))
       {  
          $suma = (floatval($value->monto)) + ($suma);
-         $ultimoRenglon='<td>'.$value->monto.'</td>';
+         $ultimoRenglon='<td>'.$this->your_money_format($value->monto).'</td>';
       }
       else{$suma= $sumadetalle; $ultimoRenglon.=$detalle;}
         $html.= $ultimoRenglon;
 		}       
 
     if($suma < 0) $suma = $suma *-1;
-    $sumaFormateada = number_format($suma, 2);
+    $sumaFormateada = $this->your_money_format($suma);
   
      if ($categoria!=='0') {
-      $html.='<tr><th colspan=3 style="text-align:center">TOTAL:</th><td>$ '.$sumaFormateada.'</td>';
+      $html.='<tr><th colspan=3 style="text-align:center">TOTAL:</th><td> '.$sumaFormateada.'</td>';
      }
 
 	  echo $html;
@@ -175,5 +177,5 @@ class Movimiento extends CI_Controller {
       }
         echo json_encode($html);
     }
-  function your_money_format($value) {  return '$' . number_format( $value,$decimals = 2,$dec_point = ",",$thousands_sep = "."); }  
+  public function your_money_format($value) {  return '$ ' . number_format( $value,$decimals = 2,$dec_point = ",",$thousands_sep = "."); }  
 }

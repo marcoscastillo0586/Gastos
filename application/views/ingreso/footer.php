@@ -40,26 +40,28 @@ $(document).on("click",".imgCard",function(){
 /////BTN DE GUARDAR INGRESO //////
 $(document).on("click","#btnGuardarIngreso",function(){
   if ( $( ".imgCard" ).hasClass( "imgCard-selected" ) &&  $('#montoIngresar').val() && $('#concepto').val() ){
-   var monto = $('#montoIngresar').val();
-       concepto =$('#concepto').val();
-       nombreLugar = $( ".imgCard-selected" ).attr('data-nombreLugar');
+   let valorAIngresar = $('#montoIngresar').val();
+   let monto =number_format(valorAIngresar,2,',','.');    
+   concepto =$('#concepto').val();
+       nombreLugar = $( ".imgCard-selected" ).attr('data-nombreLugar').toUpperCase();
   $('div .modal').html(`
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header bg-info text-white text-center p-2">
-          <p class="modal-title text-center " id="staticBackdropLabel">Datos a Ingresar</p>
-        </div>
+        <div class="modal-header bg-success text-white d-flex justify-content-center p-2">
+    <label class="modal-title" id="staticBackdropLabel">Datos a Ingresar</label>
+</div>
+
         <div class="modal-body">
       <br>
           <div class="form-group ">  
-              <label class="text-primary" for="imgLugarNuevo">Monto: $`+monto+`</label>
+              <label class="text-muted" for="imgLugarNuevo">Monto: $`+monto+`</label>
           </div>
           <div class="form-group">
-                  <label class="text-primary" for="imgLugarNuevo">Concepto: `+concepto+`</label>
+                  <label class="text-muted " for="imgLugarNuevo">Concepto: `+concepto+`</label>
                   
           </div>
           <div class="form-group">
-                  <label class="text-primary" for="imgLugarNuevo">Lugar de Ingreso: `+nombreLugar+`</label>
+                  <label class="text-muted " for="imgLugarNuevo">Lugar de Ingreso: `+nombreLugar+`</label>
                   
           </div>
        
@@ -149,6 +151,20 @@ function cargarLugares(){
     
   });
 }
+
+  //Fin de icono de cada tarjeta de limites
+  function number_format(number, decimals, dec_point, thousands_point) {
+    if (number == null || !isFinite(number)){throw new TypeError("number is not valid");}
+    if (!decimals) { var len = number.toString().split('.').length; decimals = len > 1 ? len : 0;}
+    if (!dec_point) {dec_point = '.';}
+    if (!thousands_point) {thousands_point = ',';}
+    number = parseFloat(number).toFixed(decimals);
+    number = number.replace(".", dec_point);
+    var splitNum = number.split(dec_point);
+    splitNum[0] = splitNum[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousands_point);
+    number = splitNum.join(dec_point);
+    return number;
+  }
 
 });
 </script>

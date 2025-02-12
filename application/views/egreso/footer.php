@@ -156,7 +156,6 @@ $( function() {
             cargarCategoria();
             $('#modal').modal("show");
             $('#montoIngresar').val('');
-            $('#concepto').val('');
             $('#conceptoGeneral').val('');
             $('#cmbcategoria :selected').val('');
             $( ".imgCard-selected" ).removeClass('imgCard-selected');
@@ -287,7 +286,7 @@ var objDatos = [];
               let categoria = $('#cmbcategoria_' + index + " option:selected").text();
               let catId = $('#cmbcategoria_'+index).attr("id");  
               let id_categoria = $("#"+catId+" option:selected").val();
-              let monto = parseFloat($('#montoIngresar_' + index).val());
+              let monto = number_format(parseFloat($('#montoIngresar_' + index).val()),2,',','.'); 
               objDatos[index] = {
                 concepto: concepto,
                 categoria: categoria,
@@ -298,7 +297,8 @@ var objDatos = [];
          
 
             // Itera sobre cada opción en objDatos y agrega una fila a la tabla para cada una
-               montoTotal = Number(montoTotal.toFixed(2));
+             //  let montoTotal = Number(montoTotal.toFixed(2));
+                 montoTotal =number_format(Number(montoTotal.toFixed(2)),2,',','.'); 
               let concepto        = $('#concepto_0').val();
               let id_lugar        = $(".imgCard-selected").attr('data-imglugar');
               let nombreLugar     = $(".imgCard-selected").attr('data-nombreLugar');
@@ -492,13 +492,13 @@ var objDatos = [];
             $('div .modal').html(`    
               <div class="modal-dialog">
                 <div class="modal-content">
-                  <div class="modal-header bg-info text-white text-center p-2">
+                  <div class="modal-header bg-success text-white text-center p-2">
                     <p class="modal-title text-center " >Datos Ingresados</p>
                   </div>  
           
                   <div class="modal-body"><br>
                     <div class="form-group">
-                            <label class="text-primary" >El Gasto Se Registro De Manera Exitosa.</label>
+                            <label class="text-muted" >El Gasto Se Registro De Manera Exitosa.</label>
                     </div>
                   </div>
           
@@ -509,7 +509,7 @@ var objDatos = [];
             </div>`);
              $('#modal').modal("show");
              $('#montoIngresar').val('');
-             $('#concepto').val('');
+             $('#conceptoGeneral').val('');
              $('#cmbcategoria :selected').val('');
              $( ".imgCard-selected" ).removeClass('imgCard-selected');
           }else{alert('Algo salio mal');    }
@@ -550,6 +550,18 @@ var objDatos = [];
         }
     });
   });
-
+ //Fin de icono de cada tarjeta de limites
+ function number_format(number, decimals, dec_point, thousands_point) {
+    if (number == null || !isFinite(number)){throw new TypeError("number is not valid");}
+    if (!decimals) { var len = number.toString().split('.').length; decimals = len > 1 ? len : 0;}
+    if (!dec_point) {dec_point = '.';}
+    if (!thousands_point) {thousands_point = ',';}
+    number = parseFloat(number).toFixed(decimals);
+    number = number.replace(".", dec_point);
+    var splitNum = number.split(dec_point);
+    splitNum[0] = splitNum[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousands_point);
+    number = splitNum.join(dec_point);
+    return number;
+  }
 });
 </script>
