@@ -63,14 +63,14 @@ class Movimiento extends CI_Controller {
       
       if ($categoria=='0'){
         if ($value->id_movimiento_enc == $valueDet->movimiento){ 
-          $sumadetalle = (floatval($value->monto)) + ($suma);
+          $sumadetalle = $value->monto + $suma;
 
           
           $ultimoRenglon='<td class="custom-td-height">'.$this->your_money_format($value->monto).' <i class="fas fa-angle-double-down mostrarmas" style="cursor: pointer;" data-id='.$value->id_movimiento_enc.'></i><i class="fas fa-angle-double-up mostrarmas up_'.$value->id_movimiento_enc.'" style="cursor: pointer;display:none" "></i></td>';
           $detalle.='
                     <tr class="mitdoculto_'.$value->id_movimiento_enc.' text-dark" style="display: none;">
-                    	<td class="custom-td-height"></td>
-                    	<td class="custom-td-height">'.$valueDet->categoria.'</td>
+                    	<td class="custom-td-height"><img src="'.$valueDet->img.'"display: inline-block; width: 100px; height: 100px; background-size: cover;></td>
+                      <td class="custom-td-height">'.$valueDet->categoria.'</td>
                     	<td class="custom-td-height">'.$valueDet->concepto.'</td>
                     	<td class="custom-td-height">'.$this->your_money_format($valueDet->monto).'</td>
                     </tr>';

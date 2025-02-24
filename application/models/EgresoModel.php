@@ -41,8 +41,6 @@ class EgresoModel extends CI_Model {
 
     $this->db->trans_complete(); // Completa la transacción
     return $this->db->trans_status(); // Retorna true si todo fue bien, false si hubo error
-
-
 }
 
   public function darConceptoIndividual(){

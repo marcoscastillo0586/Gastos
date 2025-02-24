@@ -66,6 +66,7 @@ $where ="WHERE md.id_lugar IN($lugar)";
           me.concepto_general,
           md.concepto,
           md.id_categoria,
+          md.img,
           cat.nombre AS categoria,
           SUM(md.monto) AS monto 
         FROM
